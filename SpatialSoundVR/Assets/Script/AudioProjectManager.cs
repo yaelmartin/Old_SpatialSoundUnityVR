@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 public class AudioProjectManager : MonoBehaviour
 {
-    public string folderDirectory;
+    [SerializeField] private string folderDirectory;
     [SerializeField] private GameObject audioOrbPrefab;
     [SerializeField] private AudioOrbsManager audioOrbsManager;
 
@@ -14,6 +14,12 @@ public class AudioProjectManager : MonoBehaviour
 
     public void TryImportProjectOrAudioFiles()
     {
+        #if UNITY_EDITOR
+            //keep folderDirectory
+        #else
+            folderDirectory = Path.Combine(Application.streamingAssetsPath, "AudioSource");
+        #endif
+        
         ClearAudioOrbs();
         ImportAudioFiles();
         
@@ -58,7 +64,7 @@ public class AudioProjectManager : MonoBehaviour
                 int column = prefabIndex % gridWidth;
 
                 Vector3 position = audioOrbsManager.transform.position + new Vector3(column * 0.5f, 0f, row * 0.5f); // Adjust the spacing between prefabs as desired
-                Quaternion rotation = Quaternion.identity;
+                Quaternion rotation = Quaternion.Euler(0,180,0);
                 GameObject audioOrb = Instantiate(audioOrbPrefab, position, rotation);
                 AudioSource audioSource = audioOrb.GetComponent<AudioSource>();
                 StartCoroutine(LoadAudioClipAsync(file, audioSource));

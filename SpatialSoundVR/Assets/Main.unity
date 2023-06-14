@@ -2258,8 +2258,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8458aa7953cf1bd4285a6b55d6695cda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  folderDirectory: D:\HDD tempo\1_HDD realtempo\1_unitySpatial
-  audioOrbPrefab: {fileID: 9109662529407543985, guid: 38a92364912da534c9da29553820951e,
+  folderDirectory: D:\HDD tempo\1_HDD realtempo\1_UnityAudioSource\1_unitySpatial
+  audioOrbPrefab: {fileID: 4419266065153122581, guid: 38a92364912da534c9da29553820951e,
     type: 3}
   audioOrbsManager: {fileID: 1159503652}
 --- !u!4 &799477205
@@ -2448,6 +2448,11 @@ PrefabInstance:
     - target: {fileID: 4769098102207602867, guid: 2ed984a58a974166bf92c82a74380454,
         type: 3}
       propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4769098102207602867, guid: 2ed984a58a974166bf92c82a74380454,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4769098102207602869, guid: 2ed984a58a974166bf92c82a74380454,
@@ -5196,7 +5201,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
