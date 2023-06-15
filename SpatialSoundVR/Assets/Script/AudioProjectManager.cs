@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
@@ -9,6 +10,10 @@ public class AudioProjectManager : MonoBehaviour
     [SerializeField] private string folderDirectory;
     [SerializeField] private GameObject audioOrbPrefab;
     [SerializeField] private AudioOrbsManager audioOrbsManager;
+    
+    //User Interface
+    [SerializeField] private UIPlayerManager[] uiPlayerManagers;
+    
 
     private float maxAudioLengthSeconds; // Maximum duration of the retrieved audio files
 
@@ -46,6 +51,20 @@ public class AudioProjectManager : MonoBehaviour
         Debug.Log("ImportProjectCoroutine going to");
         LoadProjectJSON();
     }
+
+
+
+
+
+    public void TryPlaySongFrom(float seconds)
+    {
+        if (true)
+        {
+            audioOrbsManager.PlayAudioFromTime(seconds);
+        }
+    }
+    
+    
     
 
     private void ImportAudioFiles()
@@ -122,17 +141,18 @@ public class AudioProjectManager : MonoBehaviour
 
     private void ClearAudioOrbs()
     {
-        int childCount = audioOrbsManager.transform.childCount;
-
-        for (int i = childCount - 1; i >= 0; i--)
-        {
-            GameObject child = audioOrbsManager.transform.GetChild(i).gameObject;
-            Destroy(child);
-        }
+        audioOrbsManager.DeleteAudioVisualizers();
     }
 
+    public void TrySaveProject()
+    {
+        if (true)
+        {
+            SaveProjectJSON();
+        }
+    }
     
-    public void SaveProjectJSON()
+    private void SaveProjectJSON()
     {
         List<AudioOrbData> audioOrbDataList = new List<AudioOrbData>();
 

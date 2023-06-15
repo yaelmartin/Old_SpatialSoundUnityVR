@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class AudioOrbsManager : MonoBehaviour
@@ -10,6 +11,17 @@ public class AudioOrbsManager : MonoBehaviour
         foreach (AudioSourceVisualizer visualizer in audioVisualizers)
         {
             visualizer.Initialize();
+        }
+    }
+    
+    public void DeleteAudioVisualizers()
+    {
+        int childCount = transform.childCount;
+
+        for (int i = childCount - 1; i >= 0; i--)
+        {
+            GameObject child = transform.GetChild(i).gameObject;
+            Destroy(child);
         }
     }
 
