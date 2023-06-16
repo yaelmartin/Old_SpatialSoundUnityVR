@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -16,12 +17,17 @@ public class UIPlayerManager : MonoBehaviour
     
 
     [SerializeField] private GameObject playerBar;
-    
     [SerializeField] private Slider playerSlider;
+    [SerializeField] private TMP_Text playerTextCurrentTime;
+    [SerializeField] private TMP_Text playerTextTotalTime;
+    
+    
     [SerializeField] private Slider volumeSlider;
     
     [SerializeField] private GameObject buttonPlayGO;
     [SerializeField] private GameObject buttonPauseGO;
+    
+    
     
     
     void Start()
@@ -30,49 +36,68 @@ public class UIPlayerManager : MonoBehaviour
         playerBar.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void SetValuesForNewlySongLoad(float songLenght)
     {
-
         playerSlider.maxValue = songLenght;
         playerSlider.SetValueWithoutNotify(0);
+        playerTextTotalTime.text = ConvertFloatToTimeString(songLenght);
+        playerTextCurrentTime.text = ConvertFloatToTimeString(songLenght);
         
-        ButtonsPlayPause(true);
+        SetButtonsPlayPause(true);
         
         playerBar.SetActive(true);
     }
-
-    public void HideEverything()
+    public void NoProjectOpened()
     {
         buttonSave.interactable = false;
+        playerBar.SetActive(false);
     }
 
 
     public void Play()
     {
-        //call the audioproject
-        ButtonsPlayPause(false);
+        audioProjectManager.TryResume();
+        SetButtonsPlayPause(false);
     }
     public void Pause()
     {
-        //call the audioproject
-        ButtonsPlayPause(true);
+        audioProjectManager.TryPause();
+        SetButtonsPlayPause(true);
+    }
+    public void Stop()
+    {
+        audioProjectManager.TryStop();
+        SetButtonsPlayPause(true);
     }
 
+    public void AskToOpenFileExplorer() { audioProjectManager.TryOpenFileExplorer(); }
+    public void AskToInitialize() { //TODO but shouldn't be needed
+    }
+    public void AskToSaveProject() { audioProjectManager.TrySaveProject(); }
+    
 
     public void PlayFromSliderTime()
     {
+        //TODO
         audioProjectManager.TryPlaySongFrom(playerSlider.value);
     }
 
-    private void ButtonsPlayPause(bool value)
+    /*
+    .___  ___.  _______ .___________. __    __    ______    _______       _______.
+    |   \/   | |   ____||           ||  |  |  |  /  __  \  |       \     /       |
+    |  \  /  | |  |__   `---|  |----`|  |__|  | |  |  |  | |  .--.  |   |   (----`
+    |  |\/|  | |   __|      |  |     |   __   | |  |  |  | |  |  |  |    \   \    
+    |  |  |  | |  |____     |  |     |  |  |  | |  `--'  | |  '--'  |.----)   |   
+    |__|  |__| |_______|    |__|     |__|  |__|  \______/  |_______/ |_______/                                                                         
+     */
+    private void SetButtonsPlayPause(bool value)
     {
         buttonPlayGO.SetActive(value);
         buttonPauseGO.SetActive(!value);
     }
+    public string ConvertFloatToTimeString(float time) => $"{Mathf.FloorToInt(time / 60)}:{Mathf.FloorToInt(time % 60).ToString("00")}";
+
+
+
 }

@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
@@ -7,16 +6,54 @@ using UnityEngine.Serialization;
 
 public class AudioProjectManager : MonoBehaviour
 {
-    [SerializeField] private string folderDirectory;
+    private bool readyForPlay;
+    
+    
+    [FormerlySerializedAs("folderDirectory")] [SerializeField] private string currentProjectFolderDirectory;
     [SerializeField] private GameObject audioOrbPrefab;
     [SerializeField] private AudioOrbsManager audioOrbsManager;
     
     //User Interface
     [SerializeField] private UIPlayerManager[] uiPlayerManagers;
-    
 
+
+    private float currentAudioTimeSeconds;
     private float maxAudioLengthSeconds; // Maximum duration of the retrieved audio files
 
+    private void UIsSetValuesForNewlySongLoad()
+    {
+        foreach (UIPlayerManager uiPlayerManager in uiPlayerManagers)
+        {
+            if (uiPlayerManager != null)
+            {
+                uiPlayerManager.SetValuesForNewlySongLoad(maxAudioLengthSeconds);
+            }
+
+        }
+    }
+
+    private void UIsNoProjectOpened()
+    {
+        foreach (UIPlayerManager uiPlayerManager in uiPlayerManagers)
+        {
+            if (uiPlayerManager != null)
+            {
+                uiPlayerManager.NoProjectOpened();
+            }
+        }
+    }
+    
+    public void Start()
+    {
+        readyForPlay = false;
+    }
+
+    public void TryOpenFileExplorer()
+    {
+        //TODO
+        TryImportProjectOrAudioFiles();
+    }
+    
     public void TryImportProjectOrAudioFiles()
     {
         #if UNITY_EDITOR
@@ -24,11 +61,12 @@ public class AudioProjectManager : MonoBehaviour
         #else
             folderDirectory = Path.Combine(Application.streamingAssetsPath, "AudioSource");
         #endif
-        
+
+        readyForPlay = false;
         ClearAudioOrbs();
         ImportAudioFiles();
         
-        string jsonFilePath = Path.Combine(folderDirectory, "project.json");
+        string jsonFilePath = Path.Combine(currentProjectFolderDirectory, "project.json");
         Debug.Log("Searching for =>"+jsonFilePath);
 
         if (File.Exists(jsonFilePath))
@@ -54,6 +92,27 @@ public class AudioProjectManager : MonoBehaviour
 
 
 
+    public void TryResume()
+    {
+        if (readyForPlay)
+        {
+            //TODO
+        }
+    }
+    public void TryPause()
+    {
+        if (readyForPlay)
+        {
+            //TODO
+        }
+    }
+    public void TryStop()
+    {
+        if (readyForPlay)
+        {
+            //TODO
+        }
+    }
 
 
     public void TryPlaySongFrom(float seconds)
@@ -66,10 +125,11 @@ public class AudioProjectManager : MonoBehaviour
     
     
     
+    
 
     private void ImportAudioFiles()
     {
-        string[] audioFiles = Directory.GetFiles(folderDirectory, "*.*", SearchOption.AllDirectories);
+        string[] audioFiles = Directory.GetFiles(currentProjectFolderDirectory, "*.*", SearchOption.AllDirectories);
         int prefabIndex = 0;
         int gridWidth = 5; // Adjust the grid width as desired
 
@@ -146,7 +206,7 @@ public class AudioProjectManager : MonoBehaviour
 
     public void TrySaveProject()
     {
-        if (true)
+        if (currentProjectFolderDirectory!=null)
         {
             SaveProjectJSON();
         }
@@ -173,7 +233,7 @@ public class AudioProjectManager : MonoBehaviour
         projectData.audioOrbDataList = audioOrbDataList;
 
         string json = JsonUtility.ToJson(projectData);
-        string jsonFilePath = Path.Combine(folderDirectory, "project.json");
+        string jsonFilePath = Path.Combine(currentProjectFolderDirectory, "project.json");
         File.WriteAllText(jsonFilePath, json);
 
         Debug.Log("Project JSON saved.");
@@ -181,7 +241,7 @@ public class AudioProjectManager : MonoBehaviour
     
     private void LoadProjectJSON()
     {
-        string json = File.ReadAllText(Path.Combine(folderDirectory, "project.json"));
+        string json = File.ReadAllText(Path.Combine(currentProjectFolderDirectory, "project.json"));
         AudioProjectData projectData = JsonUtility.FromJson<AudioProjectData>(json);
 
         foreach (AudioOrbData audioOrbData in projectData.audioOrbDataList)

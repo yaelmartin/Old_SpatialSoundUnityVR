@@ -40,14 +40,5 @@ public class AudioOrbsManager : MonoBehaviour
             visualizer.StopAudio();
         }
     }
-
-    public void PlayAudioFromStart()
-    {
-        foreach (AudioSourceVisualizer visualizer in audioVisualizers)
-        {
-            visualizer.PlayFrom(0f);
-        }
-    }
-    
     
 }

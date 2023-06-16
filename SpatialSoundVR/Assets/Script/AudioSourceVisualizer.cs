@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Rendering;
 using TMPro;
 
 public class AudioSourceVisualizer : MonoBehaviour
@@ -8,7 +7,7 @@ public class AudioSourceVisualizer : MonoBehaviour
     public Gradient loudnessColorGradient;
 
     private Renderer cubeRenderer;
-    public TMP_Text _textMesh;
+    private TMP_Text textMesh;
 
     private bool isPlayingFromTime = false;
     private float playFromTime = 0f;
@@ -16,15 +15,17 @@ public class AudioSourceVisualizer : MonoBehaviour
     private MaterialPropertyBlock materialPropertyBlock;
     private int colorPropertyID;
 
-    public void Initialize()
+    private void Awake()
     {
-        cubeRenderer = GetComponent<Renderer>();
-        audioSource = GetComponent<AudioSource>();
-        _textMesh = GetComponentInChildren<TMP_Text>();
-        _textMesh.text = name;
+        Initialize();
+    }
 
-        materialPropertyBlock = new MaterialPropertyBlock();
-        colorPropertyID = Shader.PropertyToID("_BaseColor");
+    private void OnDestroy()
+    {
+        if (audioSource != null)
+        {
+            Destroy(audioSource.clip);
+        }
     }
 
     private void Update()
@@ -59,6 +60,17 @@ public class AudioSourceVisualizer : MonoBehaviour
             sum += Mathf.Abs(samples[i]);
         }
         return sum / samples.Length;
+    }
+
+    public void Initialize()
+    {
+        cubeRenderer = GetComponent<Renderer>();
+        audioSource = GetComponent<AudioSource>();
+        textMesh = GetComponentInChildren<TMP_Text>();
+        textMesh.text = name;
+
+        materialPropertyBlock = new MaterialPropertyBlock();
+        colorPropertyID = Shader.PropertyToID("_BaseColor");
     }
 
     public void PlayFrom(float seconds)
