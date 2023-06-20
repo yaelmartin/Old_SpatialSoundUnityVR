@@ -1,89 +1,95 @@
 using UnityEngine;
 using TMPro;
 
-public class AudioSourceVisualizer : MonoBehaviour
+namespace SpatialSoundVR
 {
-    public AudioSource audioSource;
-    public Gradient loudnessColorGradient;
-
-    private Renderer cubeRenderer;
-    private TMP_Text textMesh;
-
-    private bool isPlayingFromTime = false;
-    private float playFromTime = 0f;
-
-    private MaterialPropertyBlock materialPropertyBlock;
-    private int colorPropertyID;
-
-    private void Awake()
+    public class AudioSourceVisualizer : MonoBehaviour
     {
-        Initialize();
-    }
+        public AudioSource audioSource;
+        public Gradient loudnessColorGradient;
 
-    private void OnDestroy()
-    {
-        if (audioSource != null)
+        private Renderer cubeRenderer;
+        private TMP_Text textMesh;
+
+        private bool isPlayingFromTime = false;
+        private float playFromTime = 0f;
+
+        private MaterialPropertyBlock materialPropertyBlock;
+        private int colorPropertyID;
+
+        private void Awake()
         {
-            Destroy(audioSource.clip);
-        }
-    }
-
-    private void Update()
-    {
-        if (isPlayingFromTime && !audioSource.isPlaying)
-        {
-            isPlayingFromTime = false;
-            cubeRenderer.GetPropertyBlock(materialPropertyBlock);
-            materialPropertyBlock.SetColor(colorPropertyID, Color.black);
-            cubeRenderer.SetPropertyBlock(materialPropertyBlock);
+            Initialize();
         }
 
-        if (isPlayingFromTime)
+        private void OnDestroy()
         {
-            float loudness = GetAudioLoudness();
-            float normalizedLoudness = Mathf.InverseLerp(0f, 1f, loudness);
-            Color color = loudnessColorGradient.Evaluate(normalizedLoudness);
-
-            cubeRenderer.GetPropertyBlock(materialPropertyBlock);
-            materialPropertyBlock.SetColor(colorPropertyID, color);
-            cubeRenderer.SetPropertyBlock(materialPropertyBlock);
+            if (audioSource != null)
+            {
+                //Resources.UnloadAsset(audioSource.clip);
+                AudioClip.DestroyImmediate(audioSource.clip,false);
+                //audioSource.clip.UnloadAudioData();
+            }
         }
-    }
 
-    private float GetAudioLoudness()
-    {
-        float[] samples = new float[512];
-        audioSource.GetOutputData(samples, 0);
-        float sum = 0f;
-        for (int i = 0; i < samples.Length; i++)
+        private void Update()
         {
-            sum += Mathf.Abs(samples[i]);
+            if (isPlayingFromTime && !audioSource.isPlaying)
+            {
+                isPlayingFromTime = false;
+                cubeRenderer.GetPropertyBlock(materialPropertyBlock);
+                materialPropertyBlock.SetColor(colorPropertyID, Color.black);
+                cubeRenderer.SetPropertyBlock(materialPropertyBlock);
+            }
+
+            if (isPlayingFromTime)
+            {
+                float loudness = GetAudioLoudness();
+                float normalizedLoudness = Mathf.InverseLerp(0f, 1f, loudness);
+                Color color = loudnessColorGradient.Evaluate(normalizedLoudness);
+
+                cubeRenderer.GetPropertyBlock(materialPropertyBlock);
+                materialPropertyBlock.SetColor(colorPropertyID, color);
+                cubeRenderer.SetPropertyBlock(materialPropertyBlock);
+            }
         }
-        return sum / samples.Length;
-    }
 
-    public void Initialize()
-    {
-        cubeRenderer = GetComponent<Renderer>();
-        audioSource = GetComponent<AudioSource>();
-        textMesh = GetComponentInChildren<TMP_Text>();
-        textMesh.text = name;
+        private float GetAudioLoudness()
+        {
+            float[] samples = new float[512];
+            audioSource.GetOutputData(samples, 0);
+            float sum = 0f;
+            for (int i = 0; i < samples.Length; i++)
+            {
+                sum += Mathf.Abs(samples[i]);
+            }
 
-        materialPropertyBlock = new MaterialPropertyBlock();
-        colorPropertyID = Shader.PropertyToID("_BaseColor");
-    }
+            return sum / samples.Length;
+        }
 
-    public void PlayFrom(float seconds)
-    {
-        isPlayingFromTime = true;
-        playFromTime = seconds;
+        public void Initialize()
+        {
+            cubeRenderer = GetComponent<Renderer>();
+            audioSource = GetComponent<AudioSource>();
+            textMesh = GetComponentInChildren<TMP_Text>();
+            textMesh.text = name;
 
-        audioSource.time = playFromTime;
-        audioSource.Play();
-    }
+            materialPropertyBlock = new MaterialPropertyBlock();
+            colorPropertyID = Shader.PropertyToID("_BaseColor");
+        }
 
-    public void StopAudio()
-    {
-        audioSource.Stop();
+        public void PlayFrom(float seconds)
+        {
+            isPlayingFromTime = true;
+            playFromTime = seconds;
+
+            audioSource.time = playFromTime;
+            audioSource.Play();
+        }
+
+        public void StopAudio()
+        {
+            audioSource.Stop();
+        }
     }
 }
