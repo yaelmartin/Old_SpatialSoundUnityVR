@@ -15,33 +15,29 @@ namespace SpatialSoundVR
         // Start is called before the first frame update
         void Start()
         {
-            _isVR = true;
-            SwitchToVR();
-        }
-
-        private void SwitchTo2D()
-        {
-            RigVR.SetActive(false);
-            Rig2D.SetActive(true);
-        }
-
-        private void SwitchToVR()
-        {
-            Rig2D.SetActive(false);
-            RigVR.SetActive(true);
+            UseVR(true);
         }
 
         public void SwitchRigMode()
         {
             _isVR = !_isVR;
 
-            if (_isVR)
+            UseVR(_isVR);
+        }
+        
+        public void UseVR(bool value)
+        {
+            if (value)
             {
-                SwitchToVR();
+                _isVR = true;
+                Rig2D.SetActive(false);
+                RigVR.SetActive(true);
             }
             else
             {
-                SwitchTo2D();
+                _isVR = false;
+                RigVR.SetActive(false);
+                Rig2D.SetActive(true);
             }
         }
 

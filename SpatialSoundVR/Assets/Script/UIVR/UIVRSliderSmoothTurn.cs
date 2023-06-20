@@ -5,14 +5,14 @@ using UnityEngine.EventSystems;
 
 namespace SpatialSoundVR
 {
-    public class UISliderPlayer : MonoBehaviour, IPointerUpHandler
+    public class UIVRSliderSmoothTurn : MonoBehaviour, IPointerUpHandler
     {
         [SerializeField] private Slider slider;
-        [SerializeField] private UIPlayerInstance uiPlayerInstance;
+        [SerializeField] private UIVRSettingsLocomotionInstance uiVrSettingsLocomotionInstance;
 
         public void OnPointerUp(PointerEventData data)
         {
-            uiPlayerInstance.PlayFromSliderTime();
+            uiVrSettingsLocomotionInstance.UseValueSmoothTurn();
         }
     }
 }

@@ -71,9 +71,8 @@ namespace SpatialSoundVR
             if (!preventNewLoad)
             {
                 preventNewLoad = true;
-                TryImportAudioFilesAndProjectUsingExplorerPath();
+                StartCoroutine(ImportAudioFilesAndProjectCoroutine());
             }
-
         }
         
         
@@ -175,11 +174,8 @@ namespace SpatialSoundVR
         |__| |__|  |__| | _|       \______/  | _| `._____|   |__|     
          */
 
-        public void TryImportAudioFilesAndProjectUsingExplorerPath()
-        {
-            StartCoroutine(ImportAudioFilesAndProjectCoroutine());
-        }
 
+        //MAIN METHOD
         private IEnumerator ImportAudioFilesAndProjectCoroutine()
         {
             #if UNITY_EDITOR
@@ -188,19 +184,20 @@ namespace SpatialSoundVR
                 folderDirectory = Path.Combine(Application.streamingAssetsPath, "AudioSource");
             #endif
 
-            ResetForFutureLoad();
+            yield return StartCoroutine(ResetForFutureLoad());
             yield return new WaitForFixedUpdate();
-
-            StartCoroutine(ImportAudioFiles());
+            yield return StartCoroutine(ImportAudioFiles());
             yield return new WaitForFixedUpdate();
-
+            
+            
             string jsonFilePath = Path.Combine(currentProjectFolderDirectory, "project.json");
             Debug.Log("Searching for =>" + jsonFilePath);
 
             if (File.Exists(jsonFilePath))
             {
+                yield return new WaitForFixedUpdate();
                 Debug.Log("Found existing project.json file, importing.");
-                StartCoroutine(ImportProject());
+                yield return StartCoroutine(ImportProject());
             }
             else
             {
@@ -209,6 +206,7 @@ namespace SpatialSoundVR
 
             // make everything valid
             readyForPlay = true;
+            preventNewLoad = false;
             musicStatus = MusicStatus.NotStarted;
             uiPlayerManager.UIsSetValuesForNewlySongLoad();
         }
@@ -240,7 +238,7 @@ namespace SpatialSoundVR
                     AudioSource audioSource = audioOrb.GetComponent<AudioSource>();
 
                     // Call LoadAudioClipAsync coroutine using yield return
-                    yield return LoadAudioClipAsync(file, audioSource);
+                    yield return StartCoroutine(LoadAudioClipAsync(file, audioSource));
 
                     audioOrb.transform.SetParent(audioOrbsManager.transform, true);
 
@@ -252,20 +250,18 @@ namespace SpatialSoundVR
                     {
                         maxAudioLengthSeconds = audioSource.clip.length;
                     }
-
                     prefabIndex++;
                 }
             }
-
-            Debug.Log("All audio Orbs GO have been generated.");
             audioOrbsManager.SaveAudioVisualizersAndInitialize();
-            Debug.Log("All audio Orbs GO should be initialized.");
-            preventNewLoad = false;
+  
+
+            yield return null;
         }
 
 
 
-        private System.Collections.IEnumerator LoadAudioClipAsync(string filePath, AudioSource audioSource)
+        private IEnumerator LoadAudioClipAsync(string filePath, AudioSource audioSource)
         {
             UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + filePath, GetAudioType(filePath));
             yield return www.SendWebRequest();
@@ -309,7 +305,7 @@ namespace SpatialSoundVR
         |  |\  \----.|  |____.----)   |   |  |____     |  |     
         | _| `._____||_______|_______/    |_______|    |__|                                                         
          */
-        private void ResetForFutureLoad()
+        private IEnumerator ResetForFutureLoad()
         {
             readyForPlay = false;
             musicStatus = MusicStatus.Undefined;
@@ -317,9 +313,10 @@ namespace SpatialSoundVR
             audioOrbsManager.DeleteAudioVisualizers();
             maxAudioLengthSeconds = 0f;
             currentAudioTimeSeconds = 0f;
-
+            yield return null;
         }
-        
+
+
         
         /*
                __       _______.  ______   .__   __. 
@@ -329,12 +326,10 @@ namespace SpatialSoundVR
         |  `--'  | .----)   |   |  `--'  | |  |\   | 
          \______/  |_______/     \______/  |__| \__| 
          */
-        private System.Collections.IEnumerator ImportProject()
+        private IEnumerator ImportProject()
         {
-            Debug.Log("ImportProjectCoroutine started");
-            yield return new WaitForSeconds(2f);
-            Debug.Log("ImportProjectCoroutine going to");
             LoadProjectJSON();
+            yield return null;
         }
         private void SaveProjectJSON()
         {

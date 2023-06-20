@@ -15,8 +15,6 @@ namespace SpatialSoundVR
             {
                 visualizer.Initialize();
             }
-
-            StartCoroutine(LogAudioVisualizerCount());
         }
 
         public void DeleteAudioVisualizers()
@@ -35,12 +33,7 @@ namespace SpatialSoundVR
             audioVisualizers = Array.Empty<AudioSourceVisualizer>();
         }
 
-        private System.Collections.IEnumerator LogAudioVisualizerCount()
-        {
-            yield return null; // Wait for one frame
 
-            Debug.Log("Number of audio visualizer children: " + transform.childCount);
-        }
 
         public void PlayAudioFromTime(float seconds)
         {

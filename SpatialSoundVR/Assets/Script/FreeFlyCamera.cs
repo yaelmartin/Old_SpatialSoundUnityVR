@@ -75,11 +75,13 @@ namespace SpatialSoundVR
             Cursor.lockState = _wantedMode = CursorLockMode.None;
         }
 
+        /*
         private void OnEnable()
         {
             if (_active)
                 _wantedMode = CursorLockMode.Locked;
         }
+        */
 
         // Apply requested cursor state
         private void SetCursorState()
