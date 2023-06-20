@@ -81,11 +81,12 @@ namespace SpatialSoundVR
         public void PlayFrom(float seconds)
         {
             isPlayingFromTime = true;
-            playFromTime = seconds;
+            playFromTime = Mathf.Clamp(seconds, 0f, audioSource.clip.length); // Clamp the value within the valid range
 
             audioSource.time = playFromTime;
             audioSource.Play();
         }
+
 
         public void StopAudio()
         {

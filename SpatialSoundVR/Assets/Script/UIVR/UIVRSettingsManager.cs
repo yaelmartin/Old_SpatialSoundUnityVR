@@ -33,7 +33,6 @@ namespace SpatialSoundVR
         //ENABLING AND DISABLING
         public void SmoothLocomotion(bool value)
         {
-            //dynamicMoveProvider.enabled = value;
             leftActionBasedControllerManager.smoothMotionEnabled = value;
             foreach (UIVRSettingsLocomotionInstance uiVrSettingsLocomotionInstance in uiVrSettingsLocomotionInstances)
             {

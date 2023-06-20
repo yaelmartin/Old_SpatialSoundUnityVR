@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 8486692755222002647}
   - component: {fileID: 1435311132355161935}
   - component: {fileID: 1829386813614735418}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -407,7 +407,6 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 4
     m_NumAlphaKeys: 2
-  _textMesh: {fileID: 1829386813614735418}
 --- !u!54 &7962896733065250966
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -790,7 +789,7 @@ GameObject:
   - component: {fileID: 8470240771378713845}
   - component: {fileID: 3157716993608483330}
   - component: {fileID: 7997969220772052285}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
