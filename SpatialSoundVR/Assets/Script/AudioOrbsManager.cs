@@ -1,41 +1,56 @@
+using System;
 using UnityEngine;
 
-public class AudioOrbsManager : MonoBehaviour
+namespace SpatialSoundVR
 {
-    private AudioSourceVisualizer[] audioVisualizers;
-    
-    public void SaveAudioVisualizersAndInitialize()
+    public class AudioOrbsManager : MonoBehaviour
     {
-        audioVisualizers = GetComponentsInChildren<AudioSourceVisualizer>();
-        foreach (AudioSourceVisualizer visualizer in audioVisualizers)
-        {
-            visualizer.Initialize();
-        }
-    }
+        [SerializeField] private AudioSourceVisualizer[] audioVisualizers;
 
-    public void PlayAudioFromTime(float seconds)
-    {
-        foreach (AudioSourceVisualizer visualizer in audioVisualizers)
+        public void SaveAudioVisualizersAndInitialize()
         {
-            visualizer.PlayFrom(seconds);
-        }
-    }
+            audioVisualizers = GetComponentsInChildren<AudioSourceVisualizer>();
 
-    public void StopAudio()
-    {
-        foreach (AudioSourceVisualizer visualizer in audioVisualizers)
-        {
-            visualizer.StopAudio();
+            foreach (AudioSourceVisualizer visualizer in audioVisualizers)
+            {
+                visualizer.Initialize();
+            }
         }
-    }
 
-    public void PlayAudioFromStart()
-    {
-        foreach (AudioSourceVisualizer visualizer in audioVisualizers)
+        public void DeleteAudioVisualizers()
         {
-            visualizer.PlayFrom(0f);
+            if (!(audioVisualizers == null || audioVisualizers.Length == 0))
+            {
+                foreach (AudioSourceVisualizer visualizer in audioVisualizers)
+                {
+                    if (visualizer != null)
+                    {
+                        Destroy(visualizer.gameObject);
+                    }
+                }
+            }
+
+            audioVisualizers = Array.Empty<AudioSourceVisualizer>();
+        }
+
+
+
+        public void PlayAudioFromTime(float seconds)
+        {
+            if (audioVisualizers == null || audioVisualizers.Length == 0) { return; }
+            foreach (AudioSourceVisualizer visualizer in audioVisualizers)
+            {
+                visualizer.PlayFrom(seconds);
+            }
+        }
+
+        public void StopAudio()
+        {
+            if (audioVisualizers == null || audioVisualizers.Length == 0) { return; }
+            foreach (AudioSourceVisualizer visualizer in audioVisualizers)
+            {
+                visualizer.StopAudio();
+            }
         }
     }
-    
-    
 }
