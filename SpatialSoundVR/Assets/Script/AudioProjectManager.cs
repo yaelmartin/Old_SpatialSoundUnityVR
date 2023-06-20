@@ -182,7 +182,7 @@ namespace SpatialSoundVR
             #if UNITY_EDITOR
                 // keep folderDirectory
             #else
-                folderDirectory = Path.Combine(Application.streamingAssetsPath, "AudioSource");
+                currentProjectFolderDirectory = Path.Combine(Application.streamingAssetsPath, "AudioSource");
             #endif
 
             yield return StartCoroutine(ResetForFutureLoad());
